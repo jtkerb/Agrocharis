@@ -156,8 +156,8 @@ head(all)
     theme(legend.text = element_text(colour="black", size=12)) +
     geom_quantile(quantiles = 0.9, size=4))
 
-(Fig_TOP_compare<-ggplot(top,aes(x=NDVI,y=log(TOTAL+1))) +
-    geom_jitter(shape=19,alpha=0.1,size=2,width=0.02) + 
+(Fig_TOP500_compare<-ggplot(top,aes(x=NDVI,y=log(TOTAL+1))) +
+    geom_jitter(shape=19,alpha=0.3,size=2,width=0.02) + 
     theme_classic(base_size=14) + 
     ylab("log(number of seeds+1)") + 
     theme(legend.title=element_blank()) + 
@@ -167,19 +167,22 @@ head(all)
     geom_smooth(method='lm'))
     #geom_quantile(quantiles = 0.5, size=4))
 
-(Fig_TOP_compare2<-ggplot(top,aes(y=NDVI,x=log(TOTAL+1))) +
-    geom_jitter(shape=19,alpha=0.1,size=2,width=0.01) + 
+(Fig_TOP500_compare2<-ggplot(top,aes(y=NDVI,x=log(TOTAL+1))) +
+    geom_jitter(shape=19,alpha=0.1,size=2,width=0.05) + 
     theme_classic(base_size=14) + 
     xlab("log(number of seeds+1)") + 
     theme(legend.title=element_blank()) + 
     #theme(legend.position = c(0.15, 0.8)) + 
     ylab("NDVI") + 
     theme(legend.text = element_text(colour="black", size=12)) +
-    geom_smooth(method='lm'))
+    #geom_smooth(method='lm', aes(color="Linear Model"), se=FALSE, lwd=2) +
+    #geom_smooth(method="lm", aes(color="Exp Model"), formula= (y ~ exp(-x)), se=FALSE, linetype = 1)+
+    geom_smooth(method="loess", se=FALSE, lwd=2, col=2))
+    #geom_smooth(method="loess",aes(color="Loess"), se=FALSE, lwd=2))
 #geom_quantile(quantiles = 0.5, size=4))
 
 (Fig_compare2<-ggplot(all,aes(x=NDVI,y=log(TOTAL+1))) +
-    geom_jitter(shape=19,alpha=0.02,size=2,width=0.2) + 
+    geom_jitter(shape=19,alpha=0.02,size=2,width=0.02) + 
     theme_classic(base_size=14) + 
     ylab("log(number of seeds+1)") + 
     theme(legend.title=element_blank()) + 
@@ -188,14 +191,15 @@ head(all)
     theme(legend.text = element_text(colour="black", size=12)) +
     geom_quantile(quantiles = 0.9, size=4))
 
-(Fig1a<-ggplot(df3, aes(x=Month, y=NDVI)) +
+(Fig1a<-ggplot(df3, aes(x=as.numeric(Month), y=NDVI)) +
   theme_classic(base_size=14) + 
   geom_smooth(method = "loess", size = 1.5, col='darkgreen') +
   xlab("Month") +
   geom_point(data=df3, aes(x=Month, y=NDVI), color='black', alpha=0.1)+
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  geom_point(data=df3_SP, aes(x=Month, y=NDVI,color=as.factor(YR)), alpha=0.3, size =2)+
+  geom_point(data=df3_SP, aes(as.numeric(Month), y=NDVI,color=as.factor(YR)), alpha=0.3, size =2)+
   theme(legend.position='none'))
+
 
 (Fig1b<-ggplot(sheet,aes(x=as.factor(month),y=log(TOTAL+1),color=as.factor(yr))) +
   geom_jitter(shape=19,alpha=0.3,size=2,width=0.2) + 
@@ -208,12 +212,13 @@ head(all)
 
 f1A <- ggplotGrob(Fig1a)
 f1B <- ggplotGrob(Fig1b)
+f1C <- ggplotGrob(Fig_TOP500_compare2)
 
 maxWidth = grid::unit.pmax(f1A$widths[2:5], f1B$widths[2:5])
 f1A$widths[2:5] <- as.list(maxWidth)
 f1B$widths[2:5] <- as.list(maxWidth)
-Fig1ab<-arrangeGrob(f1A, f1B, ncol=1)
-ggsave(Fig1ab, filename ="figs/fig1ab_new.png",device="png",width=7, height = 10)
+Fig1ab<-arrangeGrob(f1A, f1B,f1C, ncol=1)
+ggsave(Fig1ab, filename ="figs/fig1ab_new2.png",device="png",width=6, height = 14)
 
 ####################################################################################################
 ####################################################################################################
