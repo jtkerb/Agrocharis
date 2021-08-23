@@ -20,7 +20,7 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
 
 ### Read in agrocharis dataset
 
-sheet<-read.csv("data/agrosheet.csv")
+sheet<-read.csv("data/agrosheet.csv", , fileEncoding="UTF-8-BOM")
 sheet<-as.data.frame(sheet)
 sheet$SNAME<-as.factor(sheet$SNAME)
 sheet<-sheet %>% mutate(newdate=dmy(DATE)) %>% mutate(month=month(newdate),yr=year(newdate),dy=day(newdate))# add column with more standard notation for date and add columns that pull out month, year and date# new variable to make new age categories based on size. Only unintuitive assignment is LJs being included as adult females.
@@ -135,7 +135,16 @@ summary(cand.models[[1]]) # summary of best model
 # NDVI through year, all years
 df3$Month<-as.numeric(df3$Month)
 
+
+
+
 all<-left_join(df3, sheet, by = c("Month" = "month"))
+
+top<- all %>%                                    
+  arrange(desc(TOTAL)) %>% 
+  group_by(Month) %>%
+  slice(1:500)
+
 head(all)
 (Fig_compare<-ggplot(all,aes(x=NDVI,y=log(TOTAL+1),color=as.factor(yr))) +
     geom_jitter(shape=19,alpha=0.02,size=2,width=0.2) + 
@@ -146,6 +155,28 @@ head(all)
     xlab("NDVI") + 
     theme(legend.text = element_text(colour="black", size=12)) +
     geom_quantile(quantiles = 0.9, size=4))
+
+(Fig_TOP_compare<-ggplot(top,aes(x=NDVI,y=log(TOTAL+1))) +
+    geom_jitter(shape=19,alpha=0.1,size=2,width=0.02) + 
+    theme_classic(base_size=14) + 
+    ylab("log(number of seeds+1)") + 
+    theme(legend.title=element_blank()) + 
+    #theme(legend.position = c(0.15, 0.8)) + 
+    xlab("NDVI") + 
+    theme(legend.text = element_text(colour="black", size=12)) +
+    geom_smooth(method='lm'))
+    #geom_quantile(quantiles = 0.5, size=4))
+
+(Fig_TOP_compare2<-ggplot(top,aes(y=NDVI,x=log(TOTAL+1))) +
+    geom_jitter(shape=19,alpha=0.1,size=2,width=0.01) + 
+    theme_classic(base_size=14) + 
+    xlab("log(number of seeds+1)") + 
+    theme(legend.title=element_blank()) + 
+    #theme(legend.position = c(0.15, 0.8)) + 
+    ylab("NDVI") + 
+    theme(legend.text = element_text(colour="black", size=12)) +
+    geom_smooth(method='lm'))
+#geom_quantile(quantiles = 0.5, size=4))
 
 (Fig_compare2<-ggplot(all,aes(x=NDVI,y=log(TOTAL+1))) +
     geom_jitter(shape=19,alpha=0.02,size=2,width=0.2) + 

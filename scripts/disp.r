@@ -18,9 +18,10 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
 
 ### Read in agrocharis dataset
 
-sheet<-read.csv("data/agrosheet.csv")
+sheet<-read.csv("data/agrosheet.csv", fileEncoding="UTF-8-BOM")
 sheet<-as.data.frame(sheet)
 sheet$SNAME<-as.factor(sheet$SNAME)
+head(sheet)
 sheet<-sheet %>% mutate(newdate=dmy(DATE)) %>% mutate(month=month(newdate),yr=year(newdate),dy=day(newdate))# add column with more standard notation for date and add columns that pull out month, year and date# new variable to make new age categories based on size. Only unintuitive assignment is LJs being included as adult females.
 
 sheet$newage<-0 # new column for re-labeling age-sex classes
