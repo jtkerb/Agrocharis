@@ -20,7 +20,7 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
 
 ### Read in agrocharis dataset
 
-sheet<-read.csv("data/agrosheet.csv", , fileEncoding="UTF-8-BOM")
+sheet<-read.csv("data/agrosheet.csv", fileEncoding="UTF-8-BOM")
 sheet<-as.data.frame(sheet)
 sheet$SNAME<-as.factor(sheet$SNAME)
 sheet<-sheet %>% mutate(newdate=dmy(DATE)) %>% mutate(month=month(newdate),yr=year(newdate),dy=day(newdate))# add column with more standard notation for date and add columns that pull out month, year and date# new variable to make new age categories based on size. Only unintuitive assignment is LJs being included as adult females.
@@ -143,7 +143,7 @@ all<-left_join(df3, sheet, by = c("Month" = "month"))
 top<- all %>%                                    
   arrange(desc(TOTAL)) %>% 
   group_by(Month) %>%
-  slice(1:200)
+  slice(1:500)
 
 (Fig_compare<-ggplot(all,aes(x=NDVI,y=log(TOTAL+1),color=as.factor(yr))) +
     geom_jitter(shape=19,alpha=0.02,size=2,width=0.2) + 
@@ -216,8 +216,8 @@ f1C <- ggplotGrob(Fig_TOP500_compare2)
 maxWidth = grid::unit.pmax(f1A$widths[2:5], f1B$widths[2:5])
 f1A$widths[2:5] <- as.list(maxWidth)
 f1B$widths[2:5] <- as.list(maxWidth)
-Fig1ab<-arrangeGrob(f1A, f1B,f1C, ncol=1)
-ggsave(Fig1ab, filename ="figs/fig1ab_new2.png",device="png",width=6, height = 14)
+Fig3abc<-arrangeGrob(f1A, f1B,f1C, ncol=1)
+ggsave(Fig3abc, filename ="figs/fig3abc.png",device="png",width=6, height = 14)
 ####################################################################################################
 ####################################################################################################
 ### FIGURE 4. Average number on individuals across months as a function of age and sex ###############################################################################################
